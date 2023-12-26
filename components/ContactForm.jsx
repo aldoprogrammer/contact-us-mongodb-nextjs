@@ -8,6 +8,7 @@ const ContactForm = () => {
     const [email, setEmail] = useState("");
     const [message, setMessage] = useState("");
     const [error, setError] = useState([]);
+    const [success, setSuccess] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -23,9 +24,14 @@ const ContactForm = () => {
                 message
             })
         })
-        const { msg } = await res.json();
+        const { msg, success } = await res.json();
         setError(msg);
-        console.log(error)
+        setSuccess(success);
+        if (success) {
+          setFullname("");
+          setEmail("");
+          setMessage("");
+        }
     }
 
     useEffect(() => {
@@ -73,10 +79,17 @@ const ContactForm = () => {
         type='submit'>Send</button>
       </form>
 
+
       <div className='bg-slate-100 flex flex-col
       '>
-        <div className='text-red-600 px-5
-        py-2'>error Message</div>
+        { error &&
+            error.map((e) => (
+              <div 
+                className={`${success ? "text-green-800" : "text-red-600"}
+                px-5 py-2`}>{e}</div>
+            ))
+        }
+        
       </div>
     </div>
   )
